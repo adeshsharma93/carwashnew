@@ -41,14 +41,20 @@ export default function Footer() {
           <div>
             <h4 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">Quick Links</h4>
             <ul className="space-y-3">
-              {['Home', 'Services', 'About', 'Contact'].map((link) => (
-                <li key={link}>
+              {[
+                { label: 'Home', href: '#home' },
+                { label: 'Services', href: '#services' },
+                { label: 'Pricing', href: '#pricing' },
+                { label: 'About', href: '#why-us' },
+                { label: 'Contact', href: '#footer' },
+              ].map((link) => (
+                <li key={link.label}>
                   <a
-                    href={`#${link.toLowerCase()}`}
+                    href={link.href}
                     className="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-200 flex items-center gap-2"
                   >
                     <i className="fas fa-chevron-right text-[8px] text-blue-500/50"></i>
-                    {link}
+                    {link.label}
                   </a>
                 </li>
               ))}
