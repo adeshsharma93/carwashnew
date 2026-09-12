@@ -6,10 +6,11 @@ interface ServiceCardProps {
   description: string;
   badge?: string;
   isDoorstep?: boolean;
+  isCarWash?: boolean;
   delay?: number;
 }
 
-function ServiceCard({ icon, title, description, badge, isDoorstep, delay = 0 }: ServiceCardProps) {
+function ServiceCard({ icon, title, description, badge, isDoorstep, isCarWash, delay = 0 }: ServiceCardProps) {
   const [isVisible, setIsVisible] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -29,6 +30,12 @@ function ServiceCard({ icon, title, description, badge, isDoorstep, delay = 0 }:
   const scrollToBooking = () => {
     document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  const carPricing = [
+    { size: 'Small Car', original: 500, icon: 'fas fa-car-side' },
+    { size: 'Medium Car', original: 700, icon: 'fas fa-car' },
+    { size: 'Big Car', original: 900, icon: 'fas fa-truck-pickup' },
+  ];
 
   return (
     <div
@@ -60,6 +67,44 @@ function ServiceCard({ icon, title, description, badge, isDoorstep, delay = 0 }:
 
       {/* Description */}
       <p className="text-gray-400 text-sm leading-relaxed mb-6">{description}</p>
+
+      {/* Pricing Table for Car Wash */}
+      {isCarWash && (
+        <div className="mb-6">
+          {/* Discount banner */}
+          <div className="flex items-center gap-2 mb-4">
+            <span className="px-3 py-1 text-xs font-bold rounded-full bg-green-500/20 text-green-400 border border-green-500/30">
+              <i className="fas fa-tag mr-1"></i>
+              10% OFF
+            </span>
+            <span className="text-xs text-gray-400">Limited time offer on all car washes!</span>
+          </div>
+
+          {/* Pricing rows */}
+          <div className="space-y-2.5">
+            {carPricing.map((car) => {
+              const discounted = Math.round(car.original * 0.9);
+              return (
+                <div
+                  key={car.size}
+                  className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5 hover:border-blue-500/20 transition-all duration-300"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                      <i className={`${car.icon} text-xs text-blue-400`}></i>
+                    </div>
+                    <span className="text-sm font-medium text-white">{car.size}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-500 line-through">₹{car.original}</span>
+                    <span className="text-lg font-bold gradient-text font-[Outfit]">₹{discounted}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Button */}
       <button
@@ -101,6 +146,7 @@ export default function Services() {
       icon: 'fas fa-car',
       title: 'Car Wash',
       description: 'Premium exterior and interior cleaning to keep your car looking fresh and spotless.',
+      isCarWash: true,
       delay: 0,
     },
     {
@@ -144,11 +190,17 @@ export default function Services() {
           </p>
         </div>
 
-        {/* Service Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {services.map((service) => (
-            <ServiceCard key={service.title} {...service} />
-          ))}
+        {/* Service Cards - Car Wash full width on top, others below */}
+        <div className="space-y-6">
+          {/* Car Wash - Full width with pricing */}
+          <ServiceCard {...services[0]} />
+          
+          {/* Other services in a row */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {services.slice(1).map((service) => (
+              <ServiceCard key={service.title} {...service} />
+            ))}
+          </div>
         </div>
       </div>
     </section>
