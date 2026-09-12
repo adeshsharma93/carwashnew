@@ -44,9 +44,49 @@ export default function BookingForm() {
 
   const showAddress = formData.service === 'Doorstep Wash';
 
+  // Vehicle type options based on service
+  const getVehicleOptions = () => {
+    switch (formData.service) {
+      case 'Car Wash':
+      case 'Doorstep Wash':
+        return [
+          { value: 'Small Car', label: 'Small Car' },
+          { value: 'Medium Car', label: 'Medium Car' },
+          { value: 'Big Car', label: 'Big Car' },
+          { value: 'Bike', label: 'Bike' },
+          { value: 'Auto', label: 'Auto' },
+        ];
+      case 'Bike Wash':
+        return [{ value: 'Bike', label: 'Bike' }];
+      case 'Auto Wash':
+        return [{ value: 'Auto', label: 'Auto' }];
+      default:
+        return [];
+    }
+  };
+
+  // Get price based on vehicle type
+  const getPrice = () => {
+    const prices: { [key: string]: number } = {
+      'Small Car': 450,
+      'Medium Car': 630,
+      'Big Car': 810,
+      'Bike': 200,
+      'Auto': 300,
+    };
+    return prices[formData.vehicleType] || 0;
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    
+    // Reset vehicle type when service changes
+    if (name === 'service') {
+      setFormData((prev) => ({ ...prev, service: value, vehicleType: '' }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+    
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: '' }));
     }
@@ -165,26 +205,8 @@ export default function BookingForm() {
               </div>
             </div>
 
-            {/* Vehicle Type and Service */}
+            {/* Service and Vehicle Type */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Vehicle Type <span className="text-red-400">*</span>
-                </label>
-                <select
-                  name="vehicleType"
-                  value={formData.vehicleType}
-                  onChange={handleChange}
-                  className="form-input w-full px-4 py-3 rounded-xl text-white appearance-none cursor-pointer"
-                  style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%236b7280' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center' }}
-                >
-                  <option value="" style={{ backgroundColor: '#0f1629' }}>Select Vehicle Type</option>
-                  <option value="Car" style={{ backgroundColor: '#0f1629' }}>Car</option>
-                  <option value="Bike" style={{ backgroundColor: '#0f1629' }}>Bike</option>
-                  <option value="Auto" style={{ backgroundColor: '#0f1629' }}>Auto</option>
-                </select>
-                {errors.vehicleType && <p className="text-red-400 text-xs mt-1">{errors.vehicleType}</p>}
-              </div>
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   Service <span className="text-red-400">*</span>
@@ -203,6 +225,46 @@ export default function BookingForm() {
                   <option value="Doorstep Wash" style={{ backgroundColor: '#0f1629' }}>Doorstep Wash</option>
                 </select>
                 {errors.service && <p className="text-red-400 text-xs mt-1">{errors.service}</p>}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Vehicle Type <span className="text-red-400">*</span>
+                </label>
+                <select
+                  name="vehicleType"
+                  value={formData.vehicleType}
+                  onChange={handleChange}
+                  disabled={!formData.service}
+                  className={`form-input w-full px-4 py-3 rounded-xl text-white appearance-none cursor-pointer ${!formData.service ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%236b7280' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center' }}
+                >
+                  <option value="" style={{ backgroundColor: '#0f1629' }}>
+                    {formData.service ? 'Select Vehicle Type' : 'Select Service First'}
+                  </option>
+                  {getVehicleOptions().map((option) => (
+                    <option key={option.value} value={option.value} style={{ backgroundColor: '#0f1629' }}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                {errors.vehicleType && <p className="text-red-400 text-xs mt-1">{errors.vehicleType}</p>}
+                
+                {/* Price Display */}
+                {formData.vehicleType && (
+                  <div className="mt-3 p-3 rounded-xl bg-gradient-to-r from-blue-500/10 to-cyan-400/10 border border-blue-500/20 animate-fade-in-up">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-gray-400">Estimated Price</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-bold gradient-text font-[Outfit]">₹{getPrice()}</span>
+                        {formData.vehicleType.includes('Car') && (
+                          <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-green-500/20 text-green-400">
+                            10% OFF
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
