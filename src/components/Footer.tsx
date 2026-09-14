@@ -1,4 +1,4 @@
-export default function Footer() {
+export default function Footer({ onAdminClick }: { onAdminClick?: () => void }) {
   const currentYear = new Date().getFullYear();
 
   return (
@@ -67,7 +67,7 @@ export default function Footer() {
               {['Car Wash', 'Bike Wash', 'Auto Wash', 'Doorstep Wash'].map((service) => (
                 <li key={service}>
                   <a
-                    href="#services"
+                    href="#services-detail"
                     className="text-gray-400 text-sm hover:text-blue-400 transition-colors duration-200 flex items-center gap-2"
                   >
                     <i className="fas fa-chevron-right text-[8px] text-blue-500/50"></i>
@@ -114,6 +114,14 @@ export default function Footer() {
             <a href="#" className="text-gray-500 text-sm hover:text-gray-300 transition-colors">Privacy Policy</a>
             <span className="text-gray-700">|</span>
             <a href="#" className="text-gray-500 text-sm hover:text-gray-300 transition-colors">Terms of Service</a>
+            {onAdminClick && (
+              <>
+                <span className="text-gray-700">|</span>
+                <button onClick={onAdminClick} className="text-gray-500 text-sm hover:text-blue-400 transition-colors">
+                  <i className="fas fa-lock mr-1"></i>Admin
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>

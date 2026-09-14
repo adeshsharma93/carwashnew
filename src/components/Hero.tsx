@@ -13,7 +13,7 @@ export default function Hero() {
   };
 
   const scrollToServices = () => {
-    document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('services-detail')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
