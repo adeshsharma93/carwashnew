@@ -166,7 +166,11 @@ export default function ServicesPage() {
     if (bookingSection) {
       bookingSection.scrollIntoView({ behavior: 'smooth' });
       // Store selected service in session storage for the booking form
-      sessionStorage.setItem('selectedService', serviceName);
+      try {
+        sessionStorage.setItem('selectedService', serviceName);
+      } catch (e) {
+        console.error('Error storing selected service:', e);
+      }
     }
   };
 

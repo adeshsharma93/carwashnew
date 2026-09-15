@@ -70,23 +70,35 @@ export default function BookingForm() {
 
   // Load bookings from localStorage
   useEffect(() => {
-    const stored = localStorage.getItem('shineRideBookings');
-    if (stored) {
-      setBookings(JSON.parse(stored));
+    try {
+      const stored = localStorage.getItem('shineRideBookings');
+      if (stored) {
+        setBookings(JSON.parse(stored));
+      }
+    } catch (e) {
+      console.error('Error loading bookings:', e);
     }
   }, []);
 
   // Load selected service from session storage
   useEffect(() => {
-    const selectedService = sessionStorage.getItem('selectedService');
-    if (selectedService) {
-      const [vehicleType, serviceType] = selectedService.split(' - ');
-      setFormData((prev) => ({
-        ...prev,
-        vehicleType: vehicleType === 'Car' ? 'Small Car' : vehicleType,
-        serviceType: serviceType,
-      }));
-      sessionStorage.removeItem('selectedService');
+    try {
+      const selectedService = sessionStorage.getItem('selectedService');
+      if (selectedService) {
+        const parts = selectedService.split(' - ');
+        if (parts.length >= 2) {
+          const vehicleType = parts[0];
+          const serviceType = parts.slice(1).join(' - ');
+          setFormData((prev) => ({
+            ...prev,
+            vehicleType: vehicleType === 'Car' ? 'Small Car' : vehicleType,
+            serviceType: serviceType,
+          }));
+        }
+        sessionStorage.removeItem('selectedService');
+      }
+    } catch (e) {
+      console.error('Error loading selected service:', e);
     }
   }, []);
 
@@ -185,7 +197,11 @@ export default function BookingForm() {
       
       const updatedBookings = [newBooking, ...bookings];
       setBookings(updatedBookings);
-      localStorage.setItem('shineRideBookings', JSON.stringify(updatedBookings));
+      try {
+        localStorage.setItem('shineRideBookings', JSON.stringify(updatedBookings));
+      } catch (e) {
+        console.error('Error saving booking:', e);
+      }
       
       setIsSubmitted(true);
     }
@@ -199,7 +215,11 @@ export default function BookingForm() {
   const deleteBooking = (id: string) => {
     const updatedBookings = bookings.filter((b) => b.id !== id);
     setBookings(updatedBookings);
-    localStorage.setItem('shineRideBookings', JSON.stringify(updatedBookings));
+    try {
+      localStorage.setItem('shineRideBookings', JSON.stringify(updatedBookings));
+    } catch (e) {
+      console.error('Error deleting booking:', e);
+    }
   };
 
   if (showHistory) {

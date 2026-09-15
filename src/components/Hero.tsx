@@ -22,17 +22,12 @@ export default function Hero() {
       ref={heroRef}
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
-      {/* Background Image with gradient fallback */}
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1607860108855-64acf2078ed9?w=1920&q=80')`,
-          backgroundColor: '#0a0e1a',
-        }}
-      />
+      {/* Background with gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#0a0e1a] via-[#0f1629] to-[#151d38]" />
       <div className="absolute inset-0 hero-overlay" />
-      {/* Additional gradient for depth */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0e1a]/30 via-transparent to-[#0a0e1a]" />
+      {/* Decorative gradient orbs */}
+      <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl" />
+      <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl" />
 
       {/* Decorative elements */}
       <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl" />
@@ -54,7 +49,7 @@ export default function Hero() {
 
         {/* Headline */}
         <h1
-          className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold font-[Outfit] leading-tight mb-6 transition-all duration-700 delay-200 ${
+          className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold font-outfit leading-tight mb-6 transition-all duration-700 delay-200 ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
         >
