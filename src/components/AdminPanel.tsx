@@ -24,9 +24,13 @@ export default function AdminPanel({ onClose }: { onClose: () => void }) {
   const [activeTab, setActiveTab] = useState<'bookings' | 'services' | 'stats'>('bookings');
 
   useEffect(() => {
-    const stored = localStorage.getItem('shineRideBookings');
-    if (stored) {
-      setBookings(JSON.parse(stored));
+    try {
+      const stored = localStorage.getItem('shineRideBookings');
+      if (stored) {
+        setBookings(JSON.parse(stored));
+      }
+    } catch (e) {
+      console.error('Error loading bookings:', e);
     }
   }, []);
 
@@ -35,13 +39,21 @@ export default function AdminPanel({ onClose }: { onClose: () => void }) {
       b.id === id ? { ...b, status } : b
     );
     setBookings(updated);
-    localStorage.setItem('shineRideBookings', JSON.stringify(updated));
+    try {
+      localStorage.setItem('shineRideBookings', JSON.stringify(updated));
+    } catch (e) {
+      console.error('Error updating booking:', e);
+    }
   };
 
   const deleteBooking = (id: string) => {
     const updated = bookings.filter((b) => b.id !== id);
     setBookings(updated);
-    localStorage.setItem('shineRideBookings', JSON.stringify(updated));
+    try {
+      localStorage.setItem('shineRideBookings', JSON.stringify(updated));
+    } catch (e) {
+      console.error('Error deleting booking:', e);
+    }
   };
 
   const totalRevenue = bookings.reduce((sum, b) => sum + b.price, 0);
